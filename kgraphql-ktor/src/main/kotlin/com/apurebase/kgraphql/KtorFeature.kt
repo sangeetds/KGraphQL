@@ -12,6 +12,7 @@ import io.ktor.util.*
 import kotlinx.coroutines.coroutineScope
 import kotlinx.serialization.json.*
 import kotlinx.serialization.json.Json.Default.decodeFromString
+import java.util.*
 
 class GraphQL(val schema: Schema) {
 
@@ -41,9 +42,8 @@ class GraphQL(val schema: Schema) {
 
     }
 
-
     companion object Feature: ApplicationFeature<Application, Configuration, GraphQL> {
-        override val key = AttributeKey<GraphQL>("KGraphQL")
+        override val key = AttributeKey<GraphQL>("KGraphQL-" + UUID.randomUUID())
 
         override fun install(pipeline: Application, configure: Configuration.() -> Unit): GraphQL {
             val config = Configuration().apply(configure)
