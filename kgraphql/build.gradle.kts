@@ -3,6 +3,7 @@ plugins {
     base
     kotlin("jvm") version "1.5.10"
     id("org.jetbrains.dokka") version "1.4.32"
+    id("maven-publish")
     signing
 }
 
