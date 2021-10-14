@@ -33,7 +33,12 @@ open class GraphQLError(
     /**
      * The original error thrown from a field resolver during execution.
      */
-    val originalError: Throwable? = null
+    val originalError: Throwable? = null,
+
+    /**
+     * Additional information to the error
+     */
+    val extensions: Map<String, String>? = null
 ) : Exception(message) {
 
     constructor(message: String, node: ASTNode?) : this(message, nodes = node?.let(::listOf))
