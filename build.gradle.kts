@@ -1,54 +1,35 @@
-import de.marcphilipp.gradle.nexus.NexusPublishPlugin
-import java.time.Duration
-
-val version: String by project
-val sonatypeUsername: String? = System.getenv("sonatypeUsername")
-val sonatypePassword: String? = System.getenv("sonatypePassword")
-
 plugins {
     id("com.github.ben-manes.versions") version "0.39.0"
-    id("io.codearte.nexus-staging") version "0.30.0"
-    id("de.marcphilipp.nexus-publish") version "0.4.0"
-    jacoco
+    id("org.jetbrains.kotlinx.kover") version "0.5.0"
+    `maven-publish`
 }
 
 allprojects {
     repositories {
         mavenCentral()
-        maven { url = uri("https://maven.pkg.jetbrains.space/public/p/ktor/eap") }
     }
 }
 
 subprojects {
-    group = "com.apurebase"
+    group = "org.sangeet"
     version = version
 
-    apply<NexusPublishPlugin>()
-
-    nexusPublishing {
-        repositories {
-            sonatype()
-        }
-        clientTimeout.set(Duration.parse("PT10M")) // 10 minutes
-    }
 }
 
-nexusStaging {
-    packageGroup = "com.apurebase"
-    username = sonatypeUsername
-    password = sonatypePassword
-    numberOfRetries = 360 // 1 hour if 10 seconds delay
-    delayBetweenRetriesInMillis = 10000 // 10 seconds
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            groupId = "org.sangeet"
+            artifactId = "kgraphql"
+            version = project.version as String
+
+
+        }
+    }
 }
 
 tasks {
     wrapper {
         distributionType = Wrapper.DistributionType.ALL
-    }
-    closeRepository {
-        mustRunAfter(subprojects.map { it.tasks.getByName("publishToSonatype") }.toTypedArray())
-    }
-    closeAndReleaseRepository {
-        mustRunAfter(subprojects.map { it.tasks.getByName("publishToSonatype") }.toTypedArray())
     }
 }
