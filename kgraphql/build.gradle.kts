@@ -1,8 +1,11 @@
+import com.vanniktech.maven.publish.JavadocJar
+import com.vanniktech.maven.publish.KotlinJvm
 
 plugins {
+    id("com.vanniktech.maven.publish.base")
     base
-    kotlin("jvm") version "1.5.10"
-    id("org.jetbrains.dokka") version "1.4.32"
+    kotlin("jvm")
+    id("org.jetbrains.dokka")
     signing
 }
 
@@ -24,6 +27,8 @@ val isReleaseVersion = !version.toString().endsWith("SNAPSHOT")
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
     implementation(kotlin("reflect"))
+
+    implementation("com.vanniktech:gradle-maven-publish-plugin:0.19.0")
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutine_version")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$serialization_version") // JVM dependency
@@ -81,5 +86,14 @@ signing {
     useInMemoryPgpKeys(
         System.getenv("ORG_GRADLE_PROJECT_signingKey"),
         System.getenv("ORG_GRADLE_PROJECT_signingPassword")
+    )
+}
+
+mavenPublishing {
+    configure(
+        KotlinJvm(
+            JavadocJar.Dokka("dokkaHtml"),
+            true
+        )
     )
 }

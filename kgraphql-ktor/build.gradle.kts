@@ -1,8 +1,12 @@
+import com.vanniktech.maven.publish.JavadocJar
+import com.vanniktech.maven.publish.KotlinJvm
+
 plugins {
+    id("com.vanniktech.maven.publish.base")
     base
-    kotlin("jvm") version "1.5.10"
+    kotlin("jvm")
     kotlin("plugin.serialization") version "1.5.0"
-    id("org.jetbrains.dokka") version "1.4.32"
+    id("org.jetbrains.dokka")
     `maven-publish`
     signing
 }
@@ -68,22 +72,14 @@ val dokkaJar by tasks.creating(Jar::class) {
     from(tasks.dokkaHtml)
 }
 
-publishing {
-    publications {
-        create<MavenPublication>("maven") {
-            groupId = "org.sangeet"
-            artifactId = "kgraphql-ktor"
-            version = project.version as String
-
-
-        }
-    }
-}
-
 signing {
     isRequired = isReleaseVersion
     useInMemoryPgpKeys(
         System.getenv("ORG_GRADLE_PROJECT_signingKey"),
         System.getenv("ORG_GRADLE_PROJECT_signingPassword")
     )
+}
+
+mavenPublishing {
+    configure(KotlinJvm(JavadocJar.Dokka("dokkaHtml"), true))
 }

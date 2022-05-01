@@ -1,8 +1,9 @@
 plugins {
+    id("com.vanniktech.maven.publish.base")
     base
     application
-    kotlin("jvm") version "1.5.10"
-    id("org.jetbrains.dokka") version "1.4.32"
+    kotlin("jvm")
+    id("org.jetbrains.dokka")
     signing
 }
 
