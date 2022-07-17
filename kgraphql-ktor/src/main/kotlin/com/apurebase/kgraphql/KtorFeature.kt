@@ -103,7 +103,7 @@ class GraphQL(val schema: Schema) {
             return receiveStream().bufferedReader(charset = suitableCharset).readText()
         }
 
-        private fun GraphQLError.serialize(): String = buildJsonObject {
+        internal fun GraphQLError.serialize(): String = buildJsonObject {
             put("errors", buildJsonArray {
                 addJsonObject {
                     put("message", message)
@@ -118,6 +118,13 @@ class GraphQL(val schema: Schema) {
                     put("path", buildJsonArray {
                         // TODO: Build this path. https://spec.graphql.org/June2018/#example-90475
                     })
+                    extensions?.let {
+                        put("extensions", buildJsonObject {
+                            it.forEach { (key, value) ->
+                                put(key, value)
+                            }
+                        })
+                    }
                 }
             })
         }.toString()
