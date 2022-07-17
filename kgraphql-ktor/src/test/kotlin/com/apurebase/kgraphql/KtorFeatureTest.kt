@@ -1,5 +1,6 @@
 package com.apurebase.kgraphql
 
+import com.apurebase.kgraphql.GraphQL.Feature.serialize
 import io.ktor.application.*
 import io.ktor.auth.*
 import kotlinx.serialization.json.*
@@ -110,4 +111,30 @@ class KtorFeatureTest : KtorTest() {
             }
         } shouldBeEqualTo "{\"data\":{\"test\":\"success: InputTwo(one=InputOne(enum=M1, id=M1), quantity=3434, tokens=[23, 34, 21, 434])\"}}"
     }
+
+    @Test
+    fun `Error serializer test`() {
+        val graphqlError = GraphQLError(
+            message = "test",
+            extensions = mapOf(
+                "code" to "BAD_USER_INPUT"
+            )
+        )
+
+        val expectedJson = buildJsonObject {
+            put("errors", buildJsonArray {
+                addJsonObject {
+                    put("message", "test")
+                    put("locations", buildJsonArray {})
+                    put("path", buildJsonArray {})
+                    put("extensions", buildJsonObject {
+                        put("code", "BAD_USER_INPUT")
+                    })
+                }
+            })
+        }.toString()
+
+        graphqlError.serialize() shouldBeEqualTo expectedJson
+    }
+
 }

@@ -90,7 +90,7 @@ class GraphQL(val schema: Schema) {
             return GraphQL(schema)
         }
 
-        private fun GraphQLError.serialize(): String = buildJsonObject {
+        internal fun GraphQLError.serialize(): String = buildJsonObject {
             put("errors", buildJsonArray {
                 addJsonObject {
                     put("message", message)
