@@ -3,6 +3,7 @@ plugins {
     base
     kotlin("jvm") version "1.5.10"
     id("org.jetbrains.dokka") version "1.4.32"
+    id("maven-publish")
     signing
 }
 
@@ -74,52 +75,4 @@ val dokkaJar by tasks.creating(Jar::class) {
     group = JavaBasePlugin.DOCUMENTATION_GROUP
     classifier = "javadoc"
     from(tasks.dokkaHtml)
-}
-
-publishing {
-    publications {
-        create<MavenPublication>("maven") {
-            artifactId = project.name
-            from(components["java"])
-            artifact(sourcesJar)
-            artifact(dokkaJar)
-            pom {
-                name.set("KGraphQL")
-                description.set("KGraphQL is a Kotlin implementation of GraphQL. It provides a rich DSL to set up the GraphQL schema.")
-                url.set("https://kgraphql.io/")
-                organization {
-                    name.set("aPureBase")
-                    url.set("http://apurebase.com/")
-                }
-                licenses {
-                    license {
-                        name.set("MIT License")
-                        url.set("https://github.com/aPureBase/KGraphQL/blob/main/LICENSE.md")
-                    }
-                }
-                developers {
-                    developer {
-                        id.set("jeggy")
-                        name.set("Jógvan Olsen")
-                        email.set("jol@apurebase.com")
-                    }
-                }
-                scm {
-                    connection.set("scm:git:https://github.com/aPureBase/KGraphQL.git")
-                    developerConnection.set("scm:git:https://github.com/aPureBase/KGraphQL.git")
-                    url.set("https://github.com/aPureBase/KGraphQL/")
-                    tag.set("HEAD")
-                }
-            }
-        }
-    }
-}
-
-signing {
-    isRequired = isReleaseVersion
-    useInMemoryPgpKeys(
-        System.getenv("ORG_GRADLE_PROJECT_signingKey"),
-        System.getenv("ORG_GRADLE_PROJECT_signingPassword")
-    )
-    sign(publishing.publications["maven"])
 }
